@@ -1,6 +1,6 @@
 # Virtual Stylist
 
-An AI-powered virtual stylist application that provides personalized fashion recommendations using the Gemini 1.5 Pro API.
+An AI-powered virtual stylist application that provides personalized fashion recommendations using the Gemini 2.0 flash API.
 
 ## Features
 
