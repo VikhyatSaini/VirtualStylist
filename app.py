@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, jsonify, redirect, url_for, flash
-import google.generativeai as genai
+from google.genai import Client
 import os
 from dotenv import load_dotenv
 from PIL import Image
@@ -27,9 +27,8 @@ login_manager.init_app(app)
 login_manager.login_view = 'login'
 
 # Configure Gemini API
-genai.configure(api_key=os.getenv('GEMINI_API_KEY'))
-model = genai.GenerativeModel('gemini-2.0-flash')
-vision_model = genai.GenerativeModel('gemini-2.0-flash')
+client = Client(api_key=os.getenv('GEMINI_API_KEY'))
+MODEL_ID = 'gemini-2.5-flash'
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -152,7 +151,7 @@ def send_message():
             
             try:
                 # Initialize chat with system prompt
-                chat = model.start_chat(history=[])
+                chat = client.chats.create(model=MODEL_ID)
                 response = chat.send_message(system_prompt)
                 response = chat.send_message(user_message)
             except Exception as e:
@@ -175,7 +174,7 @@ def send_message():
             
             try:
                 # Initialize chat with history
-                chat = model.start_chat(history=messages)
+                chat = client.chats.create(model=MODEL_ID, history=messages)
                 response = chat.send_message(user_message)
             except Exception as e:
                 print(f"Gemini API Error: {str(e)}")
@@ -249,11 +248,6 @@ def analyze_image():
         if image.mode == 'RGBA':
             image = image.convert('RGB')
 
-        # Convert image to bytes
-        img_byte_arr = io.BytesIO()
-        image.save(img_byte_arr, format='JPEG')
-        img_byte_arr = img_byte_arr.getvalue()
-
         # Save user's image analysis request
         user_chat = ChatHistory(
             user_id=current_user.id,
@@ -293,13 +287,10 @@ def analyze_image():
         Format your response with bullet points and be specific in your recommendations."""
 
         # Generate response using vision model
-        response = vision_model.generate_content([
-            prompt,
-            {
-                "mime_type": "image/jpeg",
-                "data": base64.b64encode(img_byte_arr).decode('utf-8')
-            }
-        ])
+        response = client.models.generate_content(
+            model=MODEL_ID,
+            contents=[prompt, image]
+        )
         
         # Format the response
         formatted_response = response.text
