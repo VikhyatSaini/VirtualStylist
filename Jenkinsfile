@@ -7,11 +7,6 @@ pipeline {
 
     stages {
 
-        stage('Clone Repository') {
-            steps {
-                git 'https://github.com/VikhyatSaini/VirtualStylist.git'
-            }
-        }
 
         stage('Build Docker Image') {
             steps {
