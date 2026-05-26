@@ -7,9 +7,10 @@ pipeline {
 
     stages {
 
+
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t $IMAGE_NAME .'
+                sh 'sudo docker build -t $IMAGE_NAME .'
             }
         }
 
@@ -21,9 +22,9 @@ pipeline {
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
 
-                    sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
+                    sh 'echo $DOCKER_PASS | sudo docker login -u $DOCKER_USER --password-stdin'
 
-                    sh 'docker push $IMAGE_NAME'
+                    sh 'sudo docker push $IMAGE_NAME'
                 }
             }
         }
