@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: virtualstylist-deployment
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: virtualstylist
+
+  template:
+    metadata:
+      labels:
+        app: virtualstylist
+
+    spec:
+      containers:
+      - name: virtualstylist
+
+        image: YOUR_DOCKERHUB_USERNAME/virtualstylist:v1
+
+        ports:
+        - containerPort: 5000
+
+        env:
+        - name: GEMINI_API_KEY
+          value: "YOUR_GEMINI_API_KEY"
