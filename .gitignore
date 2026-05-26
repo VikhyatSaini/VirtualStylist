@@ -1,1 +1,26 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# Environment variables
 .env
+
+# Terraform
+.terraform/
+terraform.tfstate
+terraform.tfstate.backup
+*.tfvars
+
+# AWS Keys
+*.pem
+
+# Kubernetes
+kubeconfig.yaml
+
+# VS Code
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
